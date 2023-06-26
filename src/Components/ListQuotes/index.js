@@ -1,54 +1,50 @@
 import './listQuotes.css';
 import { useEffect, useState } from "react";
 import { NavLink } from 'react-router-dom';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useCallback } from 'react';
 import axios from 'axios';
 
 const ListQuotes = () => {
-    
+
     let navigate = useNavigate()
     const [quotes, setQuotes] = useState([]);
-    const getAllQuotes =useCallback(async () => {
-        
+    const getAllQuotes = useCallback(async () => {
+
         try {
             let token = sessionStorage.getItem('token')
-            
-            if(!token){
+
+            if (!token) {
                 return navigate('/')
             }
 
             let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/quotes`,
-            {
-              headers:{"Authorization":`Bearer ${token}`}
-            })
-            
-            console.log("res", res)
+                {
+                    headers: { "Authorization": `Bearer ${token}` }
+                })
 
-            if(res.status===200)
-            {
-                
+            if (res.status === 200) {
+
                 setQuotes(res.data.quotes);
             }
-            else
-            {
-                
-              navigate('/')
+            else {
+
+                navigate('/')
             }
         } catch (error) {
             console.log('Error while getting all Quotes:', error);
         }
-    }, [navigate])  
+    }, [navigate])
 
     const deleteQuote = async (quoteId) => {
         try {
             let token = sessionStorage.getItem('token')
             const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/quotes/${quoteId}`, {
-                headers:{"Authorization":`Bearer ${token}`}
+                headers: { "Authorization": `Bearer ${token}` }
             });
-            
 
-            if(response){
+
+            if (response) {
                 getAllQuotes();
             }
         } catch (error) {
@@ -56,9 +52,9 @@ const ListQuotes = () => {
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getAllQuotes()
-    },[getAllQuotes])
+    }, [getAllQuotes])
 
     return (
         <div className="listQuotes">
